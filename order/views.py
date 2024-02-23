@@ -18,7 +18,7 @@ from .serializers import OrderSerializers, MyOrderSerializers
 @authentication_classes([authentication.TokenAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def checkout(request):
-    serializer = OrderSerializer(data=request.data)
+    serializer = OrderSerializers(data=request.data)
 
     if serializer.is_valid():
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -36,6 +36,7 @@ def checkout(request):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception:
+            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
